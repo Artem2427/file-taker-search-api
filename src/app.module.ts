@@ -8,9 +8,10 @@ import { AnswersModule } from './answers/answers.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { TopicModule } from './topic/topic.module';
 import { StepsModule } from './steps/steps.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
-  imports: [UsersModule, TestModule, QuestionsModule, AnswersModule, SubjectsModule, TopicModule, StepsModule],
+  imports: [UsersModule, TestModule, QuestionsModule, AnswersModule, SubjectsModule, TopicModule, StepsModule, CommonModule],
   controllers: [AppController],
   providers: [AppService],
 })
