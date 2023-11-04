@@ -1,5 +1,5 @@
 import { Common } from 'src/common/entities/common.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity('users')
 export class User extends Common {
@@ -13,6 +13,6 @@ export class User extends Common {
   @Column()
   email: string;
 
-  @Column()
-  roles: 'Mentor' | 'Trainee';
+  //   @OneToMany(() => File, (files) => files.user)
+  //   files: File[];
 }
