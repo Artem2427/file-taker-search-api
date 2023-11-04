@@ -8,8 +8,8 @@ export class Step {
 
   description: string;
 
-  @ManyToOne(() => Topic, (topic) => topic.steps)
-  topic: Topic;
+  // @ManyToOne(() => Topic, (topic) => topic.steps)
+  // topic: Topic;
 
   //   @ManyToMany(() => Test, (steps) => steps.tests)
   //   tests: Test[];

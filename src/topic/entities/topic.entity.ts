@@ -7,8 +7,8 @@ export class Topic {
   name: string;
   description: string;
 
-  @ManyToOne(() => Subject, (subject) => subject.topics)
-  subject: Subject;
+  // @ManyToOne(() => Subject, (subject) => subject.topics)
+  // subject: Subject;
 
   //   @ManyToMany(() => Test, (test) => test.topics)
   //   tests: Test[];
