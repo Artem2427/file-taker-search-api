@@ -10,7 +10,7 @@ export abstract class Common {
 
   @CreateDateColumn({
     name: 'date_added',
-    type: 'date',
+    type: 'timestamptz',
     precision: 6,
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
@@ -18,7 +18,7 @@ export abstract class Common {
 
   @UpdateDateColumn({
     name: 'date_modified',
-    type: 'date',
+    type: 'timestamptz',
     precision: 6,
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
