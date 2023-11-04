@@ -8,6 +8,9 @@ export class File extends Common {
   }
 
   @Column()
+  title: string;
+
+  @Column()
   trancription: string;
 
   @Column({ length: 255 })
