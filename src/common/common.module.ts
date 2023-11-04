@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { CommonService } from './common.service';
 import { CommonController } from './common.controller';
-
+@Global()
 @Module({
   controllers: [CommonController],
-  providers: [CommonService]
+  providers: [CommonService],
 })
 export class CommonModule {}
