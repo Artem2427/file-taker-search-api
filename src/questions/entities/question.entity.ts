@@ -1,9 +1,14 @@
 import { Answer } from 'src/answers/entities/answer.entity';
+import { Common } from 'src/common/entities/common.entity';
 import { Test } from 'src/test/entities/test.entity';
-import { ManyToOne, OneToMany } from 'typeorm';
+import { Column, ManyToOne, OneToMany } from 'typeorm';
 
-export class Question {
-  id: string;
+export class Question extends Common {
+  constructor() {
+    super();
+  }
+
+  @Column()
   question: string;
 
   @OneToMany(() => Answer, (answers) => answers.question)

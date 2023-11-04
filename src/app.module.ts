@@ -24,7 +24,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           port: 3306,
           logging: true,
           url: 'postgres://qlwciyjl:CjHtd1zqw_58V8QrMvJCasNmw5_kAKzf@trumpet.db.elephantsql.com/qlwciyjl',
-          // ...configService.get('database'),
           synchronize: true,
         } as TypeOrmModuleOptions),
     }),

@@ -1,9 +1,18 @@
-export class User {
-  id: string;
+import { Common } from 'src/common/entities/common.entity';
+import { Column, Entity } from 'typeorm';
+
+@Entity('users')
+export class User extends Common {
+  constructor() {
+    super();
+  }
+
+  @Column()
   fullName: string;
+
+  @Column()
   email: string;
-  password: string;
+
+  @Column()
   roles: 'Mentor' | 'Trainee';
-  createdAt: Date;
-  updatedAt: Date;
 }

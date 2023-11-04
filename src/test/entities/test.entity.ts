@@ -1,15 +1,19 @@
+import { Common } from 'src/common/entities/common.entity';
 import { Question } from 'src/questions/entities/question.entity';
-import { Step } from 'src/steps/entities/step.entity';
 import { Subject } from 'src/subjects/entities/subject.entity';
-import { Topic } from 'src/topic/entities/topic.entity';
-import { JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
-export class Test {
-  id: string;
+@Entity('tests')
+export class Test extends Common {
+  constructor() {
+    super();
+  }
+
+  @Column()
   title: string;
-  description: string;
 
-  kind: 'company' | 'policies' | 'processes';
+  @Column()
+  description: string;
 
   @OneToMany(() => Question, (question) => question.test)
   questions: Question[];
