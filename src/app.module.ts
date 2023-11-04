@@ -8,17 +8,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FilesModule } from './files/files.module';
 @Module({
   imports: [
-    // DevtoolsModule.registerAsync({
-    //   inject: [ConfigService],
-    //   useFactory: (configService: ConfigService) => ({
-    //     http: !configService.get('isProduction'),
-    //   }),
-    // }),
-    // ConfigModule.forRoot({
-    //   isGlobal: true,
-    //   // validate: validateEnv,
-    //   load: [getConfiguration],
-    // }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
