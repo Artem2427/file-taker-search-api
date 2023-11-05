@@ -1,4 +1,4 @@
-import { Common } from 'src/common/entities/common.entity';
+import { Common } from '../../common/entities/common.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity('users')
