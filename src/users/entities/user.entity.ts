@@ -1,5 +1,5 @@
 import { Common } from '../../common/entities/common.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 
 @Entity('users')
 export class User extends Common {

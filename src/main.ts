@@ -13,6 +13,8 @@ async function bootstrap() {
     credentials: true,
   });
 
+  app.setGlobalPrefix('api');
+
   const configService = app.get(ConfigService);
   app.useGlobalPipes(
     new ValidationPipe({
@@ -21,14 +23,16 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+
   const config = new DocumentBuilder()
-    .addCookieAuth()
-    .setTitle('Quizzer API')
-    .setVersion('1.0')
+    .setTitle('File maker API')
+    .setDescription(`<strong>Documentations REST API</strong>`) // customize using Html or markdown
+    .setVersion('1.0.0')
+    // .addServer('http://localhost:5003')
     .build();
-  // await SwaggerModule.loadPluginMetadata(metadata);
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('/api/docs', app, document);
+
   await app.listen(5003);
 }
 bootstrap();
