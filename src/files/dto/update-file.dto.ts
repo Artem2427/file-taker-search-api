@@ -9,6 +9,7 @@ export enum FileFormat {
 export enum Filter {
   File = 'file',
   Video = 'video',
+  All = 'all',
 }
 
 export class GetFilesQueryDto {
