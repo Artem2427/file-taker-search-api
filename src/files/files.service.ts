@@ -8,27 +8,22 @@ import * as csvParser from 'csv-parser';
 import * as mammoth from 'mammoth';
 import * as yaml from 'js-yaml';
 
-import * as youtubeTranscript from 'youtube-transcript';
-import { HttpService } from '@nestjs/axios';
-
-import google from 'googleapis';
-
 import * as XLSX from 'xlsx';
 import { VideoService } from 'src/video/video.service';
 @Injectable()
 export class FilesService {
-  private httpService: HttpService;
   constructor(
     private readonly videoService: VideoService,
     @InjectRepository(File) private readonly _repository: Repository<File>,
   ) {}
 
   async findFiles(query: string) {
+    const where = query
+      ? [{ title: ILike(`%${query}%`) }, { trancription: ILike(`%${query}%`) }]
+      : [];
+
     const files = await this._repository.find({
-      where: [
-        { title: ILike(`%${query}%`) },
-        { trancription: ILike(`%${query}%`) },
-      ],
+      where,
     });
 
     const video = await this.videoService.search(query);
@@ -37,7 +32,6 @@ export class FilesService {
   }
 
   async uploadFile(fileData: Express.Multer.File): Promise<any> {
-    console.log(fileData.mimetype);
     let text: string;
 
     switch (fileData.mimetype) {
@@ -67,11 +61,9 @@ export class FilesService {
         break;
     }
 
-    console.log(text);
-
     const fileEntity = this._repository.create({
       title: fileData.originalname,
-      trancription: this.removeAllWhitespace(text),
+      trancription: text,
       originalName: fileData.originalname,
       mimeType: fileData.mimetype,
       size: fileData.size,
@@ -80,10 +72,6 @@ export class FilesService {
 
     const file = await this._repository.save(fileEntity);
     return file;
-  }
-
-  removeAllWhitespace(str: string): string {
-    return str.replace(/\s+/g, '');
   }
 
   async extractTextFromDocx(buffer: Buffer): Promise<string> {

@@ -1,4 +1,3 @@
-import { Caption } from 'src/captions/entities/caption.entity';
 import { Common } from 'src/common/entities/common.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
@@ -15,6 +14,6 @@ export class Video extends Common {
   @Column()
   url: string;
 
-  @OneToMany(() => Caption, (caption) => caption.video)
-  captions: Caption[];
+  @Column({ nullable: true })
+  captions: string;
 }
