@@ -10,7 +10,7 @@ export class File extends Common {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ nullable: true })
   trancription: string;
 
   @Column({ length: 255 })
@@ -22,11 +22,11 @@ export class File extends Common {
   @Column('bigint')
   size: number;
 
-  @Column({ length: 255 })
-  url: string; // URL to access the file if stored externally
+  //   @Column({ length: 255 })
+  //   url: string; // URL to access the file if stored externally
 
   @Column({ type: 'bytea' })
-  data: Buffer;
+  buffer: Buffer;
 
   //   @ManyToOne(() => User, (user) => user.files)
   //   user: User;
