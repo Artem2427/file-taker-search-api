@@ -28,7 +28,7 @@ async function bootstrap() {
     .setTitle('File maker API')
     .setDescription(`<strong>Documentations REST API</strong>`) // customize using Html or markdown
     .setVersion('1.0.0')
-    .addServer('http://localhost:5003')
+    // .addServer('http://localhost:5003')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/api/docs', app, document);
