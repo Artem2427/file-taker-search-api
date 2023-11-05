@@ -5,6 +5,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Query,
+  Body,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';

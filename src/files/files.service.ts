@@ -8,20 +8,32 @@ import * as csvParser from 'csv-parser';
 import * as mammoth from 'mammoth';
 import * as yaml from 'js-yaml';
 
+import * as youtubeTranscript from 'youtube-transcript';
+import { HttpService } from '@nestjs/axios';
+
+import google from 'googleapis';
+
 import * as XLSX from 'xlsx';
+import { VideoService } from 'src/video/video.service';
 @Injectable()
 export class FilesService {
+  private httpService: HttpService;
   constructor(
+    private readonly videoService: VideoService,
     @InjectRepository(File) private readonly _repository: Repository<File>,
   ) {}
 
   async findFiles(query: string) {
-    const files = await this._repository.createQueryBuilder('files')
-      .where('files.title ilike :search', { search: `%${query}%` })
-      .orWhere('files.trancription ilike :search', { search: `%${query}%` })
-      .getMany();
+    const files = await this._repository.find({
+      where: [
+        { title: ILike(`%${query}%`) },
+        { trancription: ILike(`%${query}%`) },
+      ],
+    });
 
-    return files;
+    const video = await this.videoService.search(query);
+
+    return [...files, ...video];
   }
 
   async uploadFile(fileData: Express.Multer.File): Promise<any> {
