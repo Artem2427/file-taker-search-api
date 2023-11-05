@@ -82,26 +82,20 @@ export class FilesService {
   }
 
   extractTextFromExcel(buffer: Buffer): string {
-    // Read the Excel file from a buffer
     const workbook = XLSX.read(buffer, { type: 'buffer' });
 
-    // Initialize an array to hold all text
     const textArray = [];
 
-    // Loop through each sheet
     workbook.SheetNames.forEach((sheetName) => {
       const worksheet = workbook.Sheets[sheetName];
       for (let cell in worksheet) {
-        // Ensure the cell is actually a cell and not part of the worksheet's metadata
         if (cell.startsWith('!')) continue;
 
-        // Get the value and add to the array
         const cellValue = worksheet[cell].v;
         textArray.push(cellValue);
       }
     });
 
-    // Join all extracted text with spaces or new lines
     return textArray.join(' ');
   }
 
@@ -110,14 +104,12 @@ export class FilesService {
       const results = [];
       const stream = new Readable();
       stream.push(buffer);
-      stream.push(null); // EOF
+      stream.push(null);
 
       stream
         .pipe(csvParser())
         .on('data', (data) => results.push(data))
         .on('end', () => {
-          // Here you can transform your JSON result to a text format as needed
-          // For simplicity, we'll just convert it to a string
           const textData = results.map((row) => JSON.stringify(row)).join('\n');
           resolve(textData);
         })
