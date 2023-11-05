@@ -6,6 +6,8 @@ import { CommonModule } from './common/common.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FilesModule } from './files/files.module';
+import { VideoModule } from './video/video.module';
+import { CaptionsModule } from './captions/captions.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -24,6 +26,8 @@ import { FilesModule } from './files/files.module';
     UsersModule,
     CommonModule,
     FilesModule,
+    VideoModule,
+    CaptionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

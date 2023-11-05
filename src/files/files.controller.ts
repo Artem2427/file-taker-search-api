@@ -5,6 +5,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Query,
+  Body,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -24,15 +25,10 @@ export class FilesController {
     return await this.filesService.uploadFile(file);
   }
 
-  // @Get('search')
-  // async searchFiles(@Query('query') query: string): Promise<any[]> {
-  //   return await this.filesService.searchFiles(query);
-  // }
-
   @Get('search')
   async search(@Query('query') query: string): Promise<any> {
-    const querySearch = await this.openAIService.search(query);
-    const entities = await this.filesService.findFiles(querySearch);
+    // const querySearch = await this.openAIService.search(query);
+    const entities = await this.filesService.findFiles(query);
     return entities;
   }
 }
