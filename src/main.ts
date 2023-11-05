@@ -6,12 +6,14 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // import metadata from './metadata';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  app.enableCors({
-    origin: 'http://localhost:3000', // replace with your application's origin
-    credentials: true,
+  const app = await NestFactory.create(AppModule, {
+    cors: true,
   });
+
+  // app.enableCors({
+  //   origin: 'https://file-taker-app.vercel.app',
+  //   credentials: true,
+  // });
 
   app.setGlobalPrefix('api');
 
@@ -26,7 +28,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('File maker API')
-    .setDescription(`<strong>Documentations REST API</strong>`) // customize using Html or markdown
+    .setDescription(`<strong>Documentations REST API</strong>`)
     .setVersion('1.0.0')
     // .addServer('http://localhost:5003')
     .build();
