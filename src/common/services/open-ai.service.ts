@@ -4,14 +4,14 @@ import OpenAI from 'openai';
 @Injectable()
 export class OpenAiService {
   private openai: OpenAI = new OpenAI({
-    apiKey: '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', // Your OpenAI API Key should be secured in environment variables
+    apiKey: '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', // Your OpenAI API Key should be secured in environment variables
   });
 
   async search(query: string): Promise<string> {
     try {
       // Using the OpenAI API to process the natural language query
       const response = await this.openai.chat.completions.create({
-        model: 'gpt-3.5-turbo', // Or another suitable model depending on your needs and availability
+        model: 'gpt-3.5-turbo',
         messages: [
           {
             role: 'user',
