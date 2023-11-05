@@ -10,10 +10,10 @@ async function bootstrap() {
     cors: true,
   });
 
-  // app.enableCors({
-  //   origin: 'https://file-taker-app.vercel.app',
-  //   credentials: true,
-  // });
+  app.enableCors({
+    origin: 'https://file-taker-app.vercel.app',
+    credentials: true,
+  });
 
   app.setGlobalPrefix('api');
 
