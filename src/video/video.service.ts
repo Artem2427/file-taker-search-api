@@ -41,6 +41,24 @@ export class VideoService {
       ],
     });
 
-    return videos;
+    const videoWithTimeCodes = videos.map((video) => {
+      return {
+        ...video,
+        captions: JSON.parse(video.captions)
+          .filter((caption) => caption.text.includes(serch))
+          .map((caption) => {
+            const startIndex = caption.text.indexOf(serch);
+            const endIndex = startIndex + caption.text.length - 1;
+
+            return {
+              ...caption,
+              start: startIndex,
+              end: endIndex,
+            };
+          }),
+      };
+    });
+
+    return videoWithTimeCodes;
   }
 }
