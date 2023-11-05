@@ -28,7 +28,7 @@ export class FilesService {
 
     const video = await this.videoService.search(query);
 
-    return [...files, ...video];
+    return { files: files, videos: video };
   }
 
   async uploadFile(fileData: Express.Multer.File): Promise<any> {
