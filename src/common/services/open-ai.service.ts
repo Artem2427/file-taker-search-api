@@ -4,23 +4,26 @@ import OpenAI from 'openai';
 @Injectable()
 export class OpenAiService {
   private openai: OpenAI = new OpenAI({
-    apiKey: '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', // Your OpenAI API Key should be secured in environment variables
+    apiKey: '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', // Your OpenAI API Key should be secured in environment variables
   });
 
   async search(query: string): Promise<string> {
     try {
       // Using the OpenAI API to process the natural language query
-      const response = await this.openai.chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'user',
-            content: `Rewrite the following search query to be more formal and precise for a database search: "${query}"`,
-          },
-        ],
-      });
+      if (query) {
+        const response = await this.openai.chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            {
+              role: 'user',
+              content: `Rewrite the following search query to be more formal and precise for a database search: "${query}"`,
+            },
+          ],
+        });
 
-      return response.choices[0].message.content.trim();
+        return response.choices[0].message.content.trim();
+      }
+      return '';
     } catch (error) {
       console.error('Error processing search query with OpenAI:', error);
       throw new Error('Failed to process search query with OpenAI');
