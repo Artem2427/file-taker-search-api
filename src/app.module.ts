@@ -7,6 +7,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FilesModule } from './files/files.module';
 import { VideoModule } from './video/video.module';
+
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
