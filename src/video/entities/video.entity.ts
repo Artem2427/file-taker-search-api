@@ -4,8 +4,9 @@ import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity('videos')
 export class Video extends Common {
-  constructor() {
+  constructor(Partial: Partial<Video>) {
     super();
+    Object.assign(this, Partial);
   }
 
   @Column()

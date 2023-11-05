@@ -14,13 +14,18 @@ export class VideoService {
 
   async create(createVideoDto: CreateVideoDto) {
     const transkript = await this.getTranscription(createVideoDto.url);
+    const video = new Video({ ...createVideoDto, captions: transkript });
 
-    const video = this.videoRepository.create({
-      ...createVideoDto,
-      captions: transkript,
+    return await this.videoRepository.save(video);
+  }
+  async getTranscription(url: any) {
+    const videoID = this.getYouTubeVideoID(url);
+    const transkript =
+      await youtubeTranscript.YoutubeTranscript.fetchTranscript(videoID);
+    const captions = transkript.map((item) => {
+      return new Caption(item);
     });
-
-    return this.videoRepository.save(video);
+    return captions;
   }
 
   getYouTubeVideoID(url: string) {
@@ -28,17 +33,12 @@ export class VideoService {
     return urlObj.searchParams.get('v');
   }
 
-  async getTranscription(url: any) {
-    const videoID = this.getYouTubeVideoID(url);
-    const transkript =
-      await youtubeTranscript.YoutubeTranscript.fetchTranscript(videoID);
-    return transkript.map((item) => {
-      return new Caption(item);
-    });
-  }
-
   async search(serch: string) {
-    const video = await this.videoRepository.find({
+    const videos = await this.videoRepository.find({
+      relations: {
+        captions: true,
+      },
+      select: { captions: true },
       where: [
         { title: ILike(`%${serch}%`) },
         {
@@ -47,13 +47,10 @@ export class VideoService {
           },
         },
       ],
-      relations: {
-        captions: true,
-      },
     });
 
-    console.log(video);
+    console.log(videos);
 
-    return video;
+    return videos;
   }
 }
