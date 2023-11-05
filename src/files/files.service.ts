@@ -21,7 +21,7 @@ export class FilesService {
     let { search, filter = Filter.All, format } = getFilesQueryDto;
     let files = [];
 
-    if (filter === Filter.File || filter === Filter.All) {
+    if (!filter || filter === Filter.File || filter === Filter.All) {
       const query = this._repository
         .createQueryBuilder('file')
         .select([
@@ -99,7 +99,7 @@ export class FilesService {
     }
 
     const video =
-      filter === Filter.Video || filter === Filter.All
+      filter === Filter.Video || filter === Filter.All || !filter
         ? await this.videoService.search(search)
         : [];
 

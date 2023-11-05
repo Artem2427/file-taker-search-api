@@ -14,6 +14,6 @@ export enum Filter {
 
 export class GetFilesQueryDto {
   search?: string;
-  filter: Filter;
+  filter?: Filter;
   format?: FileFormat;
 }
