@@ -1,15 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { File } from './entities/file.entity';
 import * as pdf from 'pdf-parse';
 import { Readable } from 'stream';
 import * as csvParser from 'csv-parser';
 import * as mammoth from 'mammoth';
-import * as yaml from 'js-yaml';
-
+import { Response } from 'express';
 import * as XLSX from 'xlsx';
 import { VideoService } from 'src/video/video.service';
+import { Filter, GetFilesQueryDto } from './dto/update-file.dto';
 @Injectable()
 export class FilesService {
   constructor(
@@ -17,18 +17,113 @@ export class FilesService {
     @InjectRepository(File) private readonly _repository: Repository<File>,
   ) {}
 
-  async findFiles(query: string) {
-    const where = query
-      ? [{ title: ILike(`%${query}%`) }, { trancription: ILike(`%${query}%`) }]
-      : [];
+  async findFiles(getFilesQueryDto: GetFilesQueryDto) {
+    let { search, filter, format } = getFilesQueryDto;
+    let files = [];
+    if (!filter || filter === Filter.File) {
+      const query = this._repository
+        .createQueryBuilder('file')
+        .select([
+          'file.id',
+          'file.title',
+          'file.size',
+          'file.mimeType',
+          'file.originalName',
+          'file.trancription',
+        ]);
 
-    const files = await this._repository.find({
-      where,
+      if (search) {
+        query
+          .where('file.title ILIKE :search', { search: `%${search}%` })
+          .orWhere('file.trancription ILIKE :search', {
+            search: `%${search}%`,
+          });
+      }
+
+      let formats: string[] = [];
+      if (format) {
+        switch (format) {
+          case 'pdf':
+            formats = ['application/pdf'];
+            break;
+
+          case 'csv':
+            formats = ['text/csv'];
+            break;
+
+          case 'xlsx':
+            formats = [
+              'application/vnd.ms-excel',
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              'application/vnd.ms-excel.sheet.macroEnabled.12',
+            ];
+            break;
+
+          case 'docx':
+            formats = [
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+              'application/msword',
+            ];
+            break;
+
+          case 'yaml':
+            formats = ['text/yaml', 'text/x-yaml', 'application/x-yaml'];
+            break;
+        }
+
+        query.andWhere('file.mimeType IN(:...formats)', { formats });
+      }
+      console.log(search);
+      files = (await query.getMany()).map((file) => {
+        if (search) {
+          const startIndex = file.trancription
+            .toLowerCase()
+            ?.indexOf(search?.toLowerCase());
+          const endIndex = startIndex + search.length - 1;
+
+          return {
+            ...file,
+            trancription: file.trancription?.slice(
+              startIndex > 50 ? startIndex - 50 : 0,
+              endIndex < file.trancription.length - 50
+                ? endIndex + 50
+                : file.trancription.length,
+            ),
+            startIndex: startIndex,
+            endIndex: endIndex,
+          };
+        }
+        return file;
+      });
+    }
+
+    const video =
+      filter === Filter.File ? await this.videoService.search(search) : [];
+
+    return {
+      files: files,
+      videos: video,
+      totalCount: files.length + video.length,
+    };
+  }
+
+  async findOne(id: string, res: Response) {
+    const file = await this._repository.findOneBy({ id });
+
+    if (!file) {
+      throw new HttpException('File not found', 404);
+    }
+
+    const buffer = file.buffer;
+    const filename = file.originalName;
+
+    res.set({
+      'Content-Type': 'text/plain',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Length': buffer.length,
     });
 
-    const video = await this.videoService.search(query);
-
-    return { files: files, videos: video };
+    res.status(HttpStatus.OK).send(buffer);
   }
 
   async uploadFile(fileData: Express.Multer.File): Promise<any> {
@@ -76,7 +171,7 @@ export class FilesService {
 
   async extractTextFromDocx(buffer: Buffer): Promise<string> {
     const result = await mammoth.extractRawText({ buffer });
-    const text = result.value; // The raw text
+    const text = result.value;
     return text;
   }
 

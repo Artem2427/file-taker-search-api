@@ -5,19 +5,18 @@ import {
   UploadedFile,
   UseInterceptors,
   Query,
+  Res,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
-import { OpenAiService } from '../common/services/open-ai.service';
+import { Express, Response } from 'express';
+
 import { ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
+import { GetFilesQueryDto } from './dto/update-file.dto';
 
 @Controller('files')
 export class FilesController {
-  constructor(
-    private readonly openAIService: OpenAiService,
-    private readonly filesService: FilesService,
-  ) {}
+  constructor(private readonly filesService: FilesService) {}
 
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -37,14 +36,15 @@ export class FilesController {
     return await this.filesService.uploadFile(file);
   }
 
-  // @Get('search')
-  // async searchFiles(@Query('query') query: string): Promise<any[]> {
-  //   return await this.filesService.searchFiles(query);
-  // }
+  @ApiQuery({ name: 'fileId', required: true, type: String })
+  @Get('download')
+  async getFile(@Query('fileId') fileId: string, @Res() res: Response) {
+    return this.filesService.findOne(fileId, res);
+  }
 
   @ApiQuery({ name: 'query', required: false, type: String })
   @Get('search')
-  async search(@Query('query') query?: string): Promise<any> {
+  async search(@Query() query: GetFilesQueryDto): Promise<any> {
     // const querySearch = await this.openAIService.search(query);
     const entities = await this.filesService.findFiles(query);
     return entities;

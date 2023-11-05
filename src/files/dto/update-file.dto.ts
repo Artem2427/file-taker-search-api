@@ -1,4 +1,18 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateFileDto } from './create-file.dto';
+export enum FileFormat {
+  PDF = 'pdf',
+  CSV = 'csv',
+  EXCEL = 'xlsx',
+  DOCX = 'docx',
+  YAML = 'yaml',
+}
 
-export class UpdateFileDto extends PartialType(CreateFileDto) {}
+export enum Filter {
+  File = 'file',
+  Video = 'video',
+}
+
+export class GetFilesQueryDto {
+  search?: string;
+  filter: Filter;
+  format?: FileFormat;
+}
