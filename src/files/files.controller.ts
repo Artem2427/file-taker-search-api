@@ -5,7 +5,6 @@ import {
   UploadedFile,
   UseInterceptors,
   Query,
-  Body,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -46,9 +45,7 @@ export class FilesController {
   @ApiQuery({ name: 'query', required: false, type: String })
   @Get('search')
   async search(@Query('query') query?: string): Promise<any> {
-    console.log(query, 'query');
-
-    const querySearch = await this.openAIService.search(query);
+    // const querySearch = await this.openAIService.search(query);
     const entities = await this.filesService.findFiles(query);
     return entities;
   }

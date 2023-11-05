@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Video } from './entities/video.entity';
 import { ILike, Repository } from 'typeorm';
 import * as youtubeTranscript from 'youtube-transcript';
-import { Caption } from 'src/captions/entities/caption.entity';
 
 @Injectable()
 export class VideoService {
@@ -22,10 +21,9 @@ export class VideoService {
     const videoID = this.getYouTubeVideoID(url);
     const transkript =
       await youtubeTranscript.YoutubeTranscript.fetchTranscript(videoID);
-    const captions = transkript.map((item) => {
-      return new Caption(item);
-    });
-    return captions;
+
+    const caption = JSON.stringify(transkript);
+    return caption;
   }
 
   getYouTubeVideoID(url: string) {
@@ -35,21 +33,13 @@ export class VideoService {
 
   async search(serch: string) {
     const videos = await this.videoRepository.find({
-      relations: {
-        captions: true,
-      },
-      select: { captions: true },
       where: [
         { title: ILike(`%${serch}%`) },
         {
-          captions: {
-            text: ILike(`%${serch}%`),
-          },
+          captions: ILike(`%${serch}%`),
         },
       ],
     });
-
-    console.log(videos);
 
     return videos;
   }
