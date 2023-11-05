@@ -10,7 +10,7 @@ import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import { OpenAiService } from '../common/services/open-ai.service';
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
 
 @Controller('files')
 export class FilesController {
@@ -42,12 +42,13 @@ export class FilesController {
   //   return await this.filesService.searchFiles(query);
   // }
 
+  @ApiQuery({ name: 'query', required: false, type: String })
   @Get('search')
   async search(@Query('query') query?: string): Promise<any> {
     console.log(query, 'query');
 
     const querySearch = await this.openAIService.search(query);
-    const entities = await this.filesService.findFiles(query ? querySearch : query);
+    const entities = await this.filesService.findFiles(query);
     return entities;
   }
 }

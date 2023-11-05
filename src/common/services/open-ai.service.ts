@@ -4,7 +4,7 @@ import OpenAI from 'openai';
 @Injectable()
 export class OpenAiService {
   private openai: OpenAI = new OpenAI({
-    apiKey: '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', // Your OpenAI API Key should be secured in environment variables
+    apiKey: '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', // Your OpenAI API Key should be secured in environment variables
   });
 
   async search(query: string): Promise<string> {

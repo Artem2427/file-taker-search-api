@@ -16,12 +16,11 @@ export class FilesService {
   ) {}
 
   async findFiles(query: string) {
-    const files = await this._repository.find({
-      // where: {
-      //   title: ILike(`%${query}%`),
-      //   trancription: ILike(`%${query}%`),
-      // },
-    });
+    const files = await this._repository.createQueryBuilder('files')
+      .where('files.title ilike :search', { search: `%${query}%` })
+      .orWhere('files.trancription ilike :search', { search: `%${query}%` })
+      .getMany();
+
     return files;
   }
 
