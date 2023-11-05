@@ -17,10 +17,10 @@ export class FilesService {
 
   async findFiles(query: string) {
     const files = await this._repository.find({
-      where: {
-        title: ILike(`%${query}%`),
-        trancription: ILike(`%${query}%`),
-      },
+      // where: {
+      //   title: ILike(`%${query}%`),
+      //   trancription: ILike(`%${query}%`),
+      // },
     });
     return files;
   }
