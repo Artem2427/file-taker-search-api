@@ -34,9 +34,9 @@ export class VideoService {
   async search(serch: string) {
     const videos = await this.videoRepository.find({
       where: [
-        { title: ILike(`%${serch}%`) },
+        { title: ILike(`%${serch.toLowerCase()}%`) },
         {
-          captions: ILike(`%${serch}%`),
+          captions: ILike(`%${serch.toLowerCase()}%`),
         },
       ],
     });
@@ -45,9 +45,13 @@ export class VideoService {
       return {
         ...video,
         captions: JSON.parse(video.captions)
-          .filter((caption) => caption.text.includes(serch))
+          .filter((caption) =>
+            caption.text.toLowerCase().includes(serch.toLowerCase()),
+          )
           .map((caption) => {
-            const startIndex = caption.text.indexOf(serch);
+            const startIndex = caption.text
+              .toLowerCase()
+              .indexOf(serch.toLowerCase());
             const endIndex = startIndex + caption.text.length - 1;
 
             return {
