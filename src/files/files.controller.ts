@@ -9,7 +9,8 @@ import {
 import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
-import { OpenAiService } from 'src/common/services/open-ai.service';
+import { OpenAiService } from '../common/services/open-ai.service';
+import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 
 @Controller('files')
 export class FilesController {
@@ -18,6 +19,18 @@ export class FilesController {
     private readonly filesService: FilesService,
   ) {}
 
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
@@ -30,9 +43,11 @@ export class FilesController {
   // }
 
   @Get('search')
-  async search(@Query('query') query: string): Promise<any> {
+  async search(@Query('query') query?: string): Promise<any> {
+    console.log(query, 'query');
+
     const querySearch = await this.openAIService.search(query);
-    const entities = await this.filesService.findFiles(querySearch);
+    const entities = await this.filesService.findFiles(query ? querySearch : query);
     return entities;
   }
 }
