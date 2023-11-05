@@ -21,7 +21,6 @@ export class VideoService {
     const videoID = this.getYouTubeVideoID(url);
     const transkript =
       await youtubeTranscript.YoutubeTranscript.fetchTranscript(videoID);
-
     const caption = JSON.stringify(transkript);
     return caption;
   }
@@ -32,26 +31,30 @@ export class VideoService {
   }
 
   async search(serch: string) {
+    const where = serch
+      ? [
+          { title: ILike(`%${serch?.toLowerCase()}%`) },
+          {
+            captions: ILike(`%${serch?.toLowerCase()}%`),
+          },
+        ]
+      : [];
+
     const videos = await this.videoRepository.find({
-      where: [
-        { title: ILike(`%${serch.toLowerCase()}%`) },
-        {
-          captions: ILike(`%${serch.toLowerCase()}%`),
-        },
-      ],
+      where,
     });
 
     const videoWithTimeCodes = videos.map((video) => {
       return {
         ...video,
         captions: JSON.parse(video.captions)
-          .filter((caption) =>
-            caption.text.toLowerCase().includes(serch.toLowerCase()),
+          ?.filter((caption) =>
+            caption.text?.toLowerCase().includes(serch?.toLowerCase()),
           )
           .map((caption) => {
             const startIndex = caption.text
               .toLowerCase()
-              .indexOf(serch.toLowerCase());
+              ?.indexOf(serch?.toLowerCase());
             const endIndex = startIndex + caption.text.length - 1;
 
             return {
