@@ -44,25 +44,29 @@ export class VideoService {
       where,
     });
 
+    console.log(serch, 'serch');
+
     const videoWithTimeCodes = videos.map((video) => {
       return {
         ...video,
-        captions: JSON.parse(video.captions)
-          ?.filter((caption) =>
-            caption.text?.toLowerCase().includes(serch?.toLowerCase()),
-          )
-          .map((caption) => {
-            const startIndex = caption.text
-              .toLowerCase()
-              ?.indexOf(serch?.toLowerCase());
-            const endIndex = startIndex + caption.text.length - 1;
+        captions: !serch
+          ? []
+          : JSON.parse(video.captions)
+              ?.filter((caption) =>
+                caption.text?.toLowerCase().includes(serch?.toLowerCase()),
+              )
+              .map((caption) => {
+                const startIndex = caption.text
+                  .toLowerCase()
+                  ?.indexOf(serch?.toLowerCase());
+                const endIndex = startIndex + caption.text?.length - 1;
 
-            return {
-              ...caption,
-              start: startIndex,
-              end: endIndex,
-            };
-          }),
+                return {
+                  ...caption,
+                  start: startIndex,
+                  end: endIndex,
+                };
+              }),
       };
     });
 

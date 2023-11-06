@@ -33,7 +33,7 @@ export class FilesService {
           'file.trancription',
         ]);
 
-      if (search) {
+      if (search?.length) {
         query
           .where('file.title ILIKE :search', { search: `%${search}%` })
           .orWhere('file.trancription ILIKE :search', {
@@ -80,15 +80,15 @@ export class FilesService {
           const startIndex = file.trancription
             .toLowerCase()
             ?.indexOf(search?.toLowerCase());
-          const endIndex = startIndex + search.length - 1;
+          const endIndex = startIndex + search?.length - 1;
 
           return {
             ...file,
             trancription: file.trancription?.slice(
               startIndex > 50 ? startIndex - 50 : 0,
-              endIndex < file.trancription.length - 50
+              endIndex < file.trancription?.length - 50
                 ? endIndex + 50
-                : file.trancription.length,
+                : file.trancription?.length,
             ),
             startIndex: startIndex,
             endIndex: endIndex,
@@ -106,7 +106,7 @@ export class FilesService {
     return {
       files: files,
       videos: video,
-      totalCount: files.length + video.length,
+      totalCount: files?.length + video?.length,
     };
   }
 
@@ -123,7 +123,7 @@ export class FilesService {
     res.set({
       'Content-Type': 'text/plain',
       'Content-Disposition': `attachment; filename="${filename}"`,
-      'Content-Length': buffer.length,
+      'Content-Length': buffer?.length,
     });
 
     res.status(HttpStatus.OK).send(buffer);
